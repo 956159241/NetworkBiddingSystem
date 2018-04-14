@@ -19,6 +19,7 @@ namespace NetworkBiddingSystem.Models
         public string EmailAddress { get; set; }
         public Nullable<System.DateTime> LastLoginTime { get; set; }
         public string CompanyAddress { get; set; }
-        public string Type { get; set; }
+        public Nullable<int> Type { get; set; }
+        public string Password { get; set; }
     }
 }

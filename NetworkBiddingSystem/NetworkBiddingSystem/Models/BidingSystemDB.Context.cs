@@ -26,5 +26,10 @@ namespace NetworkBiddingSystem.Models
         }
     
         public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<Bid> Bid { get; set; }
+        public virtual DbSet<Item> Item { get; set; }
+        public virtual DbSet<ItemBidDoc> ItemBidDoc { get; set; }
+        public virtual DbSet<Success> Success { get; set; }
+        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
     }
 }

@@ -32,19 +32,24 @@ namespace NetworkBiddingSystem.Controllers
             }
             string userName = Request["LoginCode"];
             string userPwd = Request["LoginPwd"];
-            //BLL.UserInfoService UserInfoService = new BLL.UserInfoService();
-            //T_UserInfo userInfo = UserInfoService.GetUserInfoModel(userName, userPwd);
-            //if (userInfo != null)
-            //{
-            //    return Content("ok:登录成功!!");
-            //}
-            //else
-            //{
-            //    return Content("no:用户名密码错误");
-            //}
 
-            return Content("ok:登录成功!!");
+            var isLogin = Dal.UserDal.Validate(userName,userPwd);
 
+            if (isLogin != -1)
+            {
+                if (isLogin == 0)
+                {
+                    return Content("ok0:登录成功!");
+                }
+                else if (isLogin == 1)
+                {
+                    return Content("ok1:登录成功!");
+                }
+                else
+                    return Content("no: 用户名密码错误");
+            }
+            else
+                return Content("no: 用户名密码错误");
         }
 
         public ActionResult ValidateCode()

@@ -5,6 +5,54 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="BidingSystemDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Bid">
+          <Key>
+            <PropertyRef Name="BidId" />
+          </Key>
+          <Property Name="BidId" Type="int" Nullable="false" />
+          <Property Name="ItemId" Type="int" />
+          <Property Name="BuyerId" Type="int" />
+          <Property Name="Time" Type="datetime" />
+          <Property Name="BidPrice" Type="decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <EntityType Name="Item">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="int" Nullable="false" />
+          <Property Name="Description" Type="text" />
+          <Property Name="AskingPrice" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="SellerId" Type="int" />
+          <Property Name="StartTime" Type="datetime" />
+          <Property Name="EndTime" Type="datetime" />
+          <Property Name="ItemBidDocId" Type="int" />
+        </EntityType>
+        <EntityType Name="ItemBidDoc">
+          <Key>
+            <PropertyRef Name="ItemBidDocId" />
+          </Key>
+          <Property Name="ItemBidDocId" Type="int" Nullable="false" />
+          <Property Name="Address" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Success">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="ItemId" Type="int" />
+          <Property Name="BuyerId" Type="int" />
+          <Property Name="Time" Type="datetime" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="CompanyId" />
@@ -14,9 +62,15 @@
           <Property Name="EmailAddress" Type="nvarchar" MaxLength="50" />
           <Property Name="LastLoginTime" Type="datetime" />
           <Property Name="CompanyAddress" Type="nvarchar" MaxLength="50" />
-          <Property Name="Type" Type="nchar" MaxLength="4" />
+          <Property Name="Type" Type="int" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityContainer Name="BidingSystemDBModelStoreContainer">
+          <EntitySet Name="Bid" EntityType="Self.Bid" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Item" EntityType="Self.Item" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ItemBidDoc" EntityType="Self.ItemBidDoc" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Success" EntityType="Self.Success" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -32,11 +86,65 @@
           <Property Name="EmailAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="LastLoginTime" Type="DateTime" Precision="3" />
           <Property Name="CompanyAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Type" Type="String" MaxLength="4" FixedLength="true" Unicode="true" />
+          <Property Name="Type" Type="Int32" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityContainer Name="BidingSystemDBEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="User" EntityType="Self.User" />
+          <EntitySet Name="Bid" EntityType="BidingSystemDBModel.Bid" />
+          <EntitySet Name="Item" EntityType="BidingSystemDBModel.Item" />
+          <EntitySet Name="ItemBidDoc" EntityType="BidingSystemDBModel.ItemBidDoc" />
+          <EntitySet Name="Success" EntityType="BidingSystemDBModel.Success" />
+          <EntitySet Name="sysdiagrams" EntityType="BidingSystemDBModel.sysdiagrams" />
         </EntityContainer>
+        <EntityType Name="Bid">
+          <Key>
+            <PropertyRef Name="BidId" />
+          </Key>
+          <Property Name="BidId" Type="Int32" Nullable="false" />
+          <Property Name="ItemId" Type="Int32" />
+          <Property Name="BuyerId" Type="Int32" />
+          <Property Name="Time" Type="DateTime" Precision="3" />
+          <Property Name="BidPrice" Type="Decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <EntityType Name="Item">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="AskingPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="SellerId" Type="Int32" />
+          <Property Name="StartTime" Type="DateTime" Precision="3" />
+          <Property Name="EndTime" Type="DateTime" Precision="3" />
+          <Property Name="ItemBidDocId" Type="Int32" />
+        </EntityType>
+        <EntityType Name="ItemBidDoc">
+          <Key>
+            <PropertyRef Name="ItemBidDocId" />
+          </Key>
+          <Property Name="ItemBidDocId" Type="Int32" Nullable="false" />
+          <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Success">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="ItemId" Type="Int32" />
+          <Property Name="BuyerId" Type="Int32" />
+          <Property Name="Time" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -46,12 +154,66 @@
           <EntitySetMapping Name="User">
             <EntityTypeMapping TypeName="BidingSystemDBModel.User">
               <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
                 <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
                 <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
                 <ScalarProperty Name="LastLoginTime" ColumnName="LastLoginTime" />
                 <ScalarProperty Name="CompanyAddress" ColumnName="CompanyAddress" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Bid">
+            <EntityTypeMapping TypeName="BidingSystemDBModel.Bid">
+              <MappingFragment StoreEntitySet="Bid">
+                <ScalarProperty Name="BidPrice" ColumnName="BidPrice" />
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="BuyerId" ColumnName="BuyerId" />
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+                <ScalarProperty Name="BidId" ColumnName="BidId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Item">
+            <EntityTypeMapping TypeName="BidingSystemDBModel.Item">
+              <MappingFragment StoreEntitySet="Item">
+                <ScalarProperty Name="ItemBidDocId" ColumnName="ItemBidDocId" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="SellerId" ColumnName="SellerId" />
+                <ScalarProperty Name="AskingPrice" ColumnName="AskingPrice" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ItemBidDoc">
+            <EntityTypeMapping TypeName="BidingSystemDBModel.ItemBidDoc">
+              <MappingFragment StoreEntitySet="ItemBidDoc">
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="ItemBidDocId" ColumnName="ItemBidDocId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Success">
+            <EntityTypeMapping TypeName="BidingSystemDBModel.Success">
+              <MappingFragment StoreEntitySet="Success">
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="BuyerId" ColumnName="BuyerId" />
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="BidingSystemDBModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

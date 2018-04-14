@@ -133,10 +133,15 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Common\ValidateCode.cs" />
+    <Compile Include="Controllers\AdministratorController.cs" />
     <Compile Include="Controllers\IndexController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Dal\UserDal.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Bid.cs">
+      <DependentUpon>BidingSystemDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\BidingSystemDB.Context.cs">
       <AutoGen>True</AutoGen>
@@ -152,6 +157,18 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>BidingSystemDB.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Item.cs">
+      <DependentUpon>BidingSystemDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ItemBidDoc.cs">
+      <DependentUpon>BidingSystemDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Success.cs">
+      <DependentUpon>BidingSystemDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sysdiagrams.cs">
+      <DependentUpon>BidingSystemDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\User.cs">
       <DependentUpon>BidingSystemDB.tt</DependentUpon>
@@ -261,11 +278,11 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Index\Index.cshtml" />
+    <Content Include="Views\Administrator\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Bll\" />
-    <Folder Include="Dal\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

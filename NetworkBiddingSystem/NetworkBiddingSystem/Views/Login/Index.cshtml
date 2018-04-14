@@ -17,8 +17,10 @@
         }
         function afterLogin(data) {
             var serverData = data.split(':');
-            if (serverData[0] == "ok") {
-                window.location.href = "/Index/Index"
+            if (serverData[0] == "ok0") {
+                window.location.href = "/Index/Index"   //首页
+            } else if (serverData[0] == "ok1") {
+                window.location.href = "/Administrator/Index"
             } else if (serverData[0] == "no") {
                 $("#errorMsg").text(serverData[1]);
                 changeCheckCode();

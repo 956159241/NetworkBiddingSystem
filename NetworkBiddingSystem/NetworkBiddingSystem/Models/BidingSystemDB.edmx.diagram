@@ -6,6 +6,11 @@
     <edmx:Diagrams>
       <Diagram DiagramId="78177683f3d14617bb72b743eddce2b5" Name="Diagram1">
         <EntityTypeShape EntityType="BidingSystemDBModel.User" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BidingSystemDBModel.Bid" Width="1.5" PointX="3.75" PointY="0.75" />
+        <EntityTypeShape EntityType="BidingSystemDBModel.Item" Width="1.5" PointX="3.75" PointY="3.75" />
+        <EntityTypeShape EntityType="BidingSystemDBModel.ItemBidDoc" Width="1.5" PointX="0.75" PointY="4.75" />
+        <EntityTypeShape EntityType="BidingSystemDBModel.Success" Width="1.5" PointX="5.75" PointY="0.75" />
+        <EntityTypeShape EntityType="BidingSystemDBModel.sysdiagrams" Width="1.5" PointX="5.75" PointY="3.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
