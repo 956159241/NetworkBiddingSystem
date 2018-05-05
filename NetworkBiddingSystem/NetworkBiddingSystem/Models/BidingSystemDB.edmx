@@ -9,7 +9,7 @@
           <Key>
             <PropertyRef Name="BidId" />
           </Key>
-          <Property Name="BidId" Type="int" Nullable="false" />
+          <Property Name="BidId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ItemId" Type="int" />
           <Property Name="BuyerId" Type="int" />
           <Property Name="Time" Type="datetime" />
@@ -19,26 +19,28 @@
           <Key>
             <PropertyRef Name="ItemId" />
           </Key>
-          <Property Name="ItemId" Type="int" Nullable="false" />
+          <Property Name="ItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Description" Type="text" />
           <Property Name="AskingPrice" Type="decimal" Precision="18" Scale="2" />
           <Property Name="SellerId" Type="int" />
           <Property Name="StartTime" Type="datetime" />
           <Property Name="EndTime" Type="datetime" />
           <Property Name="ItemBidDocId" Type="int" />
+          <Property Name="Status" Type="int" />
+          <Property Name="ItemName" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="ItemBidDoc">
           <Key>
             <PropertyRef Name="ItemBidDocId" />
           </Key>
-          <Property Name="ItemBidDocId" Type="int" Nullable="false" />
+          <Property Name="ItemBidDocId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Address" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Success">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ItemId" Type="int" />
           <Property Name="BuyerId" Type="int" />
           <Property Name="Time" Type="datetime" />
@@ -118,6 +120,8 @@
           <Property Name="StartTime" Type="DateTime" Precision="3" />
           <Property Name="EndTime" Type="DateTime" Precision="3" />
           <Property Name="ItemBidDocId" Type="Int32" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="ItemName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ItemBidDoc">
           <Key>
@@ -178,6 +182,8 @@
           <EntitySetMapping Name="Item">
             <EntityTypeMapping TypeName="BidingSystemDBModel.Item">
               <MappingFragment StoreEntitySet="Item">
+                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="ItemBidDocId" ColumnName="ItemBidDocId" />
                 <ScalarProperty Name="EndTime" ColumnName="EndTime" />
                 <ScalarProperty Name="StartTime" ColumnName="StartTime" />
