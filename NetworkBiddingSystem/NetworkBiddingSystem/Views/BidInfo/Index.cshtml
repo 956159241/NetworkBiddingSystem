@@ -1,0 +1,206 @@
+﻿@* 投标管理 *@
+@{
+    Layout = null;
+}
+@using NetworkBiddingSystem.Models;
+@using NetworkBiddingSystem.Common;
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>投标信息列表</title>
+    <style type="text/css">
+        .txt {
+            font-size: 14px;
+        }
+    </style>
+    <link href="~/Content/tableStyle.css" rel="stylesheet" />
+    <link href="~/Content/pageBar.css" rel="stylesheet" />
+    <link href="~/Content/themes/default/easyui.css" rel="stylesheet" />
+    <link href="~/Content/themes/icon.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.7.1.min.js"></script>
+    <script src="~/Scripts/jquery.easyui.min.js"></script>
+    <script src="~/Scripts/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            //ReplaceStatus($(this).attr("ids"));
+            ReplaceTest();
+            $("#showDetailDiv").css("display", "none");
+            $("#addInfoDiv").css("display", "none");
+            $("#editInfoDiv").css("display", "none");
+            $(".details").click(function () {
+                showDetailInfo($(this).attr("ids"));
+            });
+            $(".deletes").click(function () {
+                deleteInfo($(this).attr("ids"), $(this));
+            });
+            $("#adds").click(function () {
+
+                addInfo();
+            });
+            $(".edits").click(function () {
+                editInfo($(this).attr("ids"));
+            });
+        });
+        //编辑信息
+        function editInfo(id) {
+            $("#editInfoFrame").attr("src", "/CompanyInfo/ShowEdit/?id=" + id);
+            $("#editInfoDiv").css("display", "block");
+            $('#editInfoDiv').dialog({
+                title: "编辑信息",
+                collapsible: true,
+                minimizable: true,
+                width: 700,
+                height: 400,
+                modal: true,
+                buttons: [{
+                    text: '修改',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        //$('#addInfoDiv').dialog('close');
+                        var childWindow = $("#editInfoFrame")[0].contentWindow;
+                        childWindow.SubForm();//提交表单
+                    }
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        $('#editInfoDiv').dialog('close');
+                    }
+                }]
+            });
+        }
+
+        function afterEdit() {
+            $('#editInfoDiv').dialog('close');
+        }
+
+        function deleteInfo(id, control) {
+            $.messager.confirm("提示", "确定要删除该记录吗?", function (r) {
+                if (r) {
+                    $.post("/BidInfo/DeleteNewInfo", { "id": id }, function (data) {
+                        if (data == "ok") {
+                            $.messager.alert("提示", "删除成功!", "info");
+                            $(control).parent().parent().remove();
+                        } else {
+                            $.messager.alert("提示", "删除失败!", "info");
+                        }
+                    });
+                }
+            });
+        }
+
+        function showDetailInfo(id) {
+            $("#showDetailDiv").css("display", "block");
+            $.post("/BidInfo/GetItemInfoModel", { "id": id }, function (data) {
+                $("#title").text(data.ItemId);
+                $("#author").text(data.ItemName);
+                $("#datetime").text(ChangeDateFormat(data.StartTime));
+            });
+            $('#showDetailDiv').dialog({
+                title: "详细信息",
+                collapsible: true,
+                minimizable: true,
+                width: 500,
+                height: 400,
+                modal: true,
+                buttons: [{
+                    text: 'Ok',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        $('#showDetailDiv').dialog('close');
+                    }
+                }, {
+                    text: 'Cancel',
+                    handler: function () {
+                        $('#showDetailDiv').dialog('close');
+                    }
+                }]
+            });
+
+        }
+
+        //将序列化成json格式后日期(毫秒数)转成日期格式
+        function ChangeDateFormat(cellval) {
+            var date = new Date(parseInt(cellval.replace("/Date(", "").replace(")/", ""), 10));
+            var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+            var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+            return date.getFullYear() + "-" + month + "-" + currentDate;
+        }
+        function ReplaceStatus(ids) {
+                if ($(".status").Attr("ids") == 1)
+                    $(".status").Attr("ids").html("已审核");
+                else
+                    $(".status").Attr("ids").html("确认审核");
+        }
+
+        function ReplaceTest() {
+            var status = $('.status');
+            for (statu in status.val('a'))
+            {
+                if (statu == "1")
+                {
+                    statu = 'hello';
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+
+    @*<a href="../Content/BidDoc/1.pdf" target="_blank">测试文本</a>*@
+
+    @if (ViewData["newInfoList"] != null)
+    {
+        <table style="width:100%" id="tabs">
+            <tr><th>编号</th><th>项目名称</th><th>开始时间</th><th>结束时间</th><th>详细</th><th>删除</th><th>状态</th></tr>
+            @foreach (var newInfo in (List<Item>)ViewData["newInfoList"])
+            {
+                <tr>
+                    <td>@newInfo.ItemId</td>
+                    <td>@newInfo.ItemName</td>
+                    <td>@newInfo.StartTime.ToString().Split(' ')[0]</td>
+                    <td>@newInfo.EndTime.ToString().Split(' ')[0]</td>
+                    <td><a href="javascript:void(0)" class="details" ids="@newInfo.ItemId">详细</a></td>
+                    <td><a href="javascript:void(0)" class="deletes" ids="@newInfo.ItemId">删除</a></td>
+                    <td><a href="javascript:void(0)" class="status" ids="@newInfo.ItemId">@newInfo.Status</a></td>
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <span>暂无数据</span>
+    }
+    <p class="page_nav">
+        @MvcHtmlString.Create(PageBar.GetPageBar((int)ViewData["pageIndex"], (int)ViewData["pageCount"]))
+    </p>
+    </div>
+    <!----------------------------显示详细信息------------------------->
+    <div id="showDetailDiv">
+        <table>
+            <tr><td>编号</td><td><span id="title" class="txt"></span></td></tr>
+            <tr><td>公司名称</td><td><span id="author" class="txt"></span></td></tr>
+            <tr><td>上一次登录时间</td><td><span id="datetime" class="txt"></span></td></tr>
+            <tr><td>EmailAddress</td><td><span id="EmailAddress"></span></td></tr>、
+            <tr><td>CompanyAddress</td><td><span id="CompanyAddress"></span></td></tr>
+        </table>
+    </div>
+
+    <!----------------------------显示详细信息结束------------------------->
+    <!---------------------添加信息----------------------->
+    <div id="addInfoDiv" style="overflow:hidden">
+        <iframe id="addInfoFrame" scrolling="auto" frameborder="0" width="100%" height="100%"></iframe>
+    </div>
+    <!---------------------添加信息结束----------------------->
+    <!---------------编辑用户信息---------------------->
+    <div id="editInfoDiv" style="overflow:hidden">
+        <iframe id="editInfoFrame" scrolling="auto" frameborder="0" width="100%" height="100%"></iframe>
+    </div>
+
+    <!---------------编辑用户信息结束---------------------->
+
+
+</body>
+</html>
+

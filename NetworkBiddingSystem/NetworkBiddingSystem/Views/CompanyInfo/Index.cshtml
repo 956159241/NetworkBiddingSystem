@@ -1,0 +1,220 @@
+﻿@* 用户（公司信息）管理 *@
+@{
+    Layout = null;
+}
+@using NetworkBiddingSystem.Models;
+@using NetworkBiddingSystem.Common;
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>用户列表</title>
+    <style type="text/css">
+        .txt {
+            font-size: 14px;
+        }
+    </style>
+    <link href="~/Content/tableStyle.css" rel="stylesheet" />
+    <link href="~/Content/pageBar.css" rel="stylesheet" />
+    <link href="~/Content/themes/default/easyui.css" rel="stylesheet" />
+    <link href="~/Content/themes/icon.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.7.1.min.js"></script>
+    <script src="~/Scripts/jquery.easyui.min.js"></script>
+    <script src="~/Scripts/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#showDetailDiv").css("display", "none");
+            $("#addInfoDiv").css("display", "none");
+            $("#editInfoDiv").css("display", "none");
+            $(".details").click(function () {
+                showDetailInfo($(this).attr("ids"));
+            });
+            $(".deletes").click(function () {
+                deleteInfo($(this).attr("ids"), $(this));
+            });
+            $("#adds").click(function () {
+
+                addInfo();
+            });
+            $(".edits").click(function () {
+                editInfo($(this).attr("ids"));
+            });
+        });
+        //编辑信息
+        function editInfo(id) {
+            $("#editInfoFrame").attr("src", "/CompanyInfo/ShowEdit/?id=" + id);
+            $("#editInfoDiv").css("display", "block");
+            $('#editInfoDiv').dialog({
+                title: "编辑信息",
+                collapsible: true,
+                minimizable: true,
+                width: 700,
+                height: 400,
+                modal: true,
+                buttons: [{
+                    text: '修改',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        //$('#addInfoDiv').dialog('close');
+                        var childWindow = $("#editInfoFrame")[0].contentWindow;
+                        childWindow.SubForm();//提交表单
+                    }
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        $('#editInfoDiv').dialog('close');
+                    }
+                }]
+            });
+        }
+
+        function afterEdit() {
+            $('#editInfoDiv').dialog('close');
+        }
+
+        //添加信息
+        function addInfo() {
+            $("#addInfoFrame").attr("src", "/CompanyInfo/ShowAddInfo");
+            $("#addInfoDiv").css("display", "block");
+            $('#addInfoDiv').dialog({
+                title: "添加信息",
+                collapsible: true,
+                minimizable: true,
+                width: 700,
+                height: 400,
+                modal: true,
+                buttons: [{
+                    text: '添加',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        //$('#addInfoDiv').dialog('close');
+                        var childWindow = $("#addInfoFrame")[0].contentWindow;
+                        childWindow.SubForm();//提交表单
+                    }
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        $('#addInfoDiv').dialog('close');
+                    }
+                }]
+            });
+        }
+        //添加完成以后执行该方法
+        function afterAdd(serverData) {
+
+            // var data = $.parseJSON(serverData);
+            var data = serverData;
+            $('#addInfoDiv').dialog('close');
+            $("<tr><td>" + data.Id + "</td><td>" + data.Title + "</td><td>" + data.Author + "</td><td>" + data.SubDateTime + "</td><td><a href='javascript:void(0)' class='details' ids=" + data.Id + ">详细</a></td><td><a>删除</a></td></tr>").appendTo("#tabs");
+        }
+
+        function deleteInfo(id, control) {
+            $.messager.confirm("提示", "确定要删除该记录吗?", function (r) {
+                if (r) {
+                    $.post("/CompanyInfo/DeleteNewInfo", { "id": id }, function (data) {
+                        if (data == "ok") {
+                            $.messager.alert("提示", "删除成功!", "info");
+                            $(control).parent().parent().remove();
+                        } else {
+                            $.messager.alert("提示", "删除失败!", "info");
+                        }
+                    });
+                }
+            });
+        }
+        function showDetailInfo(id) {
+            $("#showDetailDiv").css("display", "block");
+            $.post("/CompanyInfo/GetNewInfoModel", { "id": id }, function (data) {
+                $("#title").text(data.CompanyId);
+                $("#author").text(data.CompanyId);
+                $("#datetime").text(ChangeDateFormat(data.LastLoginTime));
+                $("#EmailAddress").html(data.EmailAddress);
+                $("#CompanyAddress").html(data.CompanyAddress);
+            });
+            $('#showDetailDiv').dialog({
+                title: "详细信息",
+                collapsible: true,
+                minimizable: true,
+                width: 500,
+                height: 400,
+                modal: true,
+                buttons: [{
+                    text: 'Ok',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        $('#showDetailDiv').dialog('close');
+                    }
+                }, {
+                    text: 'Cancel',
+                    handler: function () {
+                        $('#showDetailDiv').dialog('close');
+                    }
+                }]
+            });
+
+        }
+
+        //将序列化成json格式后日期(毫秒数)转成日期格式
+        function ChangeDateFormat(cellval) {
+            var date = new Date(parseInt(cellval.replace("/Date(", "").replace(")/", ""), 10));
+            var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+            var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+            return date.getFullYear() + "-" + month + "-" + currentDate;
+        }
+    </script>
+</head>
+<body>
+    <div>
+        @*<a href="javascript:void(0)" id="adds" class="txt">添加</a>*@
+        @if (ViewData["newInfoList"] != null)
+        {
+            <table style="width:100%" id="tabs">
+                <tr><th>编号</th><th>标题</th><th>作者</th><th>时间</th><th>详细</th><th>删除</th></tr>
+                @foreach (var newInfo in (List<User>)ViewData["newInfoList"])
+                {
+                    <tr>
+                        <td>@newInfo.CompanyId</td>
+                        <td>@newInfo.CompanyName</td>
+                        <td>@newInfo.CompanyAddress</td>
+                        <td>@newInfo.LastLoginTime.ToString()</td>
+                        <td><a href="javascript:void(0)" class="details" ids="@newInfo.CompanyId">详细</a></td>
+                        <td><a href="javascript:void(0)" class="deletes" ids="@newInfo.CompanyId">删除</a></td>
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <span>暂无数据</span>
+        }
+        <p class="page_nav">
+            @MvcHtmlString.Create(PageBar.GetPageBar((int)ViewData["pageIndex"], (int)ViewData["pageCount"]))
+        </p>
+    </div>
+    <!----------------------------显示详细信息------------------------->
+    <div id="showDetailDiv">
+        <table>
+            <tr><td>编号</td><td><span id="title" class="txt"></span></td></tr>
+            <tr><td>公司名称</td><td><span id="author" class="txt"></span></td></tr>
+            <tr><td>上一次登录时间</td><td><span id="datetime" class="txt"></span></td></tr>
+            <tr><td>EmailAddress</td><td><span id="EmailAddress"></span></td></tr>、
+            <tr><td>CompanyAddress</td><td><span id="CompanyAddress"></span></td></tr>
+        </table>
+    </div>
+
+    <!----------------------------显示详细信息结束------------------------->
+    <!---------------------添加信息----------------------->
+    <div id="addInfoDiv" style="overflow:hidden">
+        <iframe id="addInfoFrame" scrolling="auto" frameborder="0" width="100%" height="100%"></iframe>
+    </div>
+    <!---------------------添加信息结束----------------------->
+    <!---------------编辑用户信息---------------------->
+    <div id="editInfoDiv" style="overflow:hidden">
+        <iframe id="editInfoFrame" scrolling="auto" frameborder="0" width="100%" height="100%"></iframe>
+    </div>
+
+    <!---------------编辑用户信息结束---------------------->
+
+</body>
+</html>
