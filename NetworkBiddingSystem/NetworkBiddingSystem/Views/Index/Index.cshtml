@@ -1,5 +1,97 @@
 ﻿@{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "用户首页";
 }
+@using NetworkBiddingSystem.Models;
+@using NetworkBiddingSystem.Common;
+<!DOCTYPE html>
 
-<h2>用户界面</h2>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>用户界面</title>
+    <link href="~/Content/themes/default/easyui.css" rel="stylesheet" />
+    <link href="~/Content/themes/icon.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.7.1.min.js"></script>
+    <script src="~/Scripts/jquery.easyui.min.js"></script>
+    <script src="~/Scripts/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            bindEvent();
+        });
+        //绑定事件
+        function bindEvent() {
+            $(".detailLink123").click(function () {
+                var title = $(this).text();
+                var url = $(this).attr("url");
+                var isExt = $('#tt').tabs('exists', title);//判断页签是否已经存在
+                if (isExt) {
+                    $('#tt').tabs('select', title);//如果存在选中
+                    return;
+                }
+                $('#tt').tabs('add', {//添加页签
+                    title: title,
+                    content: createContent(url),
+                    closable: true
+                });
+
+            });
+        }
+        function createContent(url) {
+            var strHtml = '<iframe src="' + url + '" scrolling="no" frameborder="0" width="100%" height="100%"></iframe>';
+            return strHtml;
+        }
+
+    </script>
+    <style type="text/css">
+        .txt {
+            font-size: 16px;
+            font-weight: bolder;
+            float: right;
+            margin-top: 15px;
+            margin-right: 20px;
+        }
+    </style>
+</head>
+<body class="easyui-layout">
+    <!---------顶部布局结束------------------------------------->
+
+    <div data-options="region:'north',border:false" style="height:70px;background:#B3DFDA;padding:10px; overflow:hidden;background-image:url(/Content/Images/bg3.png)">
+
+        @*<img src="~/Content/Images/logo.gif" />*@
+        <span class="txt">欢迎登录 @TempData["userInfoName"] @DateTime.Now.ToString("yyyy-MM-dd")</span>
+    </div>
+
+    <!---------顶部布局结束------------------------------------->
+    <!---------左侧布局------------------------------------>
+
+    <div data-options="region:'west',split:true,title:'West'" style="width:150px;padding:3px;">
+        <div class="easyui-accordion" style="width:auto;height:auto;">
+
+            <div title="投标信息" data-options="iconCls:'icon-ok'" style="overflow:auto;padding:10px;">
+                <a href="javascript:void(0)" class="detailLink123" url="/BidInfo/Index">全部投标</a>
+            </div>
+
+            <div title="个人招/投标" data-options="iconCls:'icon-ok'" style="overflow:auto;padding:10px;">
+                <a href="javascript:void(0)" class="detailLink123" url="/BidInfo/Index">我的投标</a><br/>
+                <a href="javascript:void(0)" class="detailLink123" url="/BidInfo/Index">我的招标</a>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!---------左侧布局结束------------------------------------>
+    <div data-options="region:'south',border:false" style="height:20px;background:#A9FACD;padding:5px; text-align:center">版权所有&copy;www.iotzzh.com</div>
+    <!---------中间布局------------------------------------->
+    <div data-options="region:'center',title:'Center'">
+
+        <div class="easyui-tabs" style="width:700px;height:250px" fit="true" id="tt">
+            <div title="全部投标信息" style="padding:0px" data-options="closable:true">
+                <iframe src="/BidInfo/Index" scrolling="no" frameborder="0" width="100%" height="100%"></iframe>
+            </div>
+        </div>
+    </div>
+    <!---------中间布局结束------------------------------------->
+</body>
+
+</html>

@@ -16,7 +16,6 @@ namespace NetworkBiddingSystem.Controllers
         {
             return View();
         }
-
         public ActionResult CheckLogin()
         {
             string validateCode = Session["validateCode"] == null ? string.Empty : Session["validateCode"].ToString();
@@ -39,18 +38,26 @@ namespace NetworkBiddingSystem.Controllers
             {
                 if (isLogin == 0)
                 {
+                    TempData["userInfoId"] = Dal.UserDal.GetUserInfoInLogin(userName, userPwd).CompanyId;
+                    TempData["userInfoName"] = Dal.UserDal.GetUserInfoInLogin(userName, userPwd).CompanyName;
+
+                    Response.Cookies["userInfoType"].Value = Dal.UserDal.GetUserInfoInLogin(userName, userPwd).Type.ToString();
                     return Content("ok0:登录成功!");
                 }
                 else if (isLogin == 1)
                 {
+                    TempData["userInfoId"] = Dal.UserDal.GetUserInfoInLogin(userName, userPwd).CompanyId;
+                    TempData["userInfoName"] = Dal.UserDal.GetUserInfoInLogin(userName, userPwd).CompanyName;
+                    Response.Cookies["userInfoType"].Value = Dal.UserDal.GetUserInfoInLogin(userName, userPwd).Type.ToString();
+
                     return Content("ok1:登录成功!");
                 }
                 else
                     return Content("no: 用户名密码错误");
             }
             else
-                return Content("no: 用户名密码错误");
-        }
+                return Content("no: 用户名密码错误");           
+         }
 
         public ActionResult ValidateCode()
         {

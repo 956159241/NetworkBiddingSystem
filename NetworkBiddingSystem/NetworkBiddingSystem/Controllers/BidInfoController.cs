@@ -23,6 +23,7 @@ namespace NetworkBiddingSystem.Controllers
             ViewData["newInfoList"] = list;
             ViewData["pageIndex"] = pageIndex;
             ViewData["pageCount"] = pageCount;
+            ViewData["userInfoType"] = Request.Cookies["userInfoType"].Value.ToString();
             return View();
         }
 

@@ -25,12 +25,16 @@
     <script type="text/javascript">
         $(function () {
             //ReplaceStatus($(this).attr("ids"));
+            HideDelete();
             ReplaceTest();
             $("#showDetailDiv").css("display", "none");
             $("#addInfoDiv").css("display", "none");
             $("#editInfoDiv").css("display", "none");
             $(".details").click(function () {
                 showDetailInfo($(this).attr("ids"));
+            });
+            $(".text_bid").click(function () {
+                ShowPrice($(this).attr("ids"));
             });
             $(".deletes").click(function () {
                 deleteInfo($(this).attr("ids"), $(this));
@@ -119,6 +123,21 @@
             });
 
         }
+        //判断是否是普通用户
+        function HideDelete()
+        {
+            var type = $('.user_type').text();
+            if(type == "0")
+            {
+                $("#tabs tr th").eq(6).css("display", "none");
+                $(".td_delete").css("display", "none");
+            }
+            else
+            {
+                $("#tabs tr th").eq(7).css("display", "none");
+                $(".td_status").css("display", "none");
+            }
+        }
 
         //将序列化成json格式后日期(毫秒数)转成日期格式
         function ChangeDateFormat(cellval) {
@@ -144,26 +163,48 @@
                 }
             }
         }
+
+        function ShowPrice(id)
+        {
+            $("a").attr(id).css();
+        }
     </script>
 </head>
 <body>
-
+    <span class="user_type" style="display:none;">@ViewData["userInfoType"]</span>
     @*<a href="../Content/BidDoc/1.pdf" target="_blank">测试文本</a>*@
 
     @if (ViewData["newInfoList"] != null)
     {
         <table style="width:100%" id="tabs">
-            <tr><th>编号</th><th>项目名称</th><th>开始时间</th><th>结束时间</th><th>详细</th><th>删除</th><th>状态</th></tr>
+            <tr>
+            <th>编号</th>
+            <th>项目名称</th>
+            <th>标价</th>
+            <th>开始时间</th>
+            <th>结束时间</th>
+            <th>详细</th>
+            <th>删除</th>
+            <th>投标</th>
+            @*<th style="display:none;">状态</th>*@
+            </tr>
             @foreach (var newInfo in (List<Item>)ViewData["newInfoList"])
             {
                 <tr>
                     <td>@newInfo.ItemId</td>
                     <td>@newInfo.ItemName</td>
+                    <td>@newInfo.AskingPrice</td>
                     <td>@newInfo.StartTime.ToString().Split(' ')[0]</td>
                     <td>@newInfo.EndTime.ToString().Split(' ')[0]</td>
                     <td><a href="javascript:void(0)" class="details" ids="@newInfo.ItemId">详细</a></td>
-                    <td><a href="javascript:void(0)" class="deletes" ids="@newInfo.ItemId">删除</a></td>
-                    <td><a href="javascript:void(0)" class="status" ids="@newInfo.ItemId">@newInfo.Status</a></td>
+                    <td class="td_delete"><a href="javascript:void(0)" class="deletes" ids="@newInfo.ItemId">删除</a></td>
+                    <td class="td_addprice"><a href="javascript:void(0)" class="addprice" ids="@newInfo.ItemId">竞投</a></td>
+                    @*<td>
+                        <a href="javascript:void(0)" class="text_bid" ids="@newInfo.ItemId">投标</a>
+                        <input placeholder="请输入投标价格" type="text" class="input_price" ids="@newInfo.ItemId" style="display:none;" />
+                        <a href="javascript:void(0)" class="text_bid_confirm" ids="@newInfo.ItemId" style="display:none;">确定</a>
+                    </td>*@
+                    @*<td class="td_status"><a href="javascript:void(0)" class="status" ids="@newInfo.ItemId" style="display:none;">@newInfo.Status</a></td>*@
                 </tr>
             }
         </table>
@@ -182,8 +223,6 @@
             <tr><td>编号</td><td><span id="title" class="txt"></span></td></tr>
             <tr><td>公司名称</td><td><span id="author" class="txt"></span></td></tr>
             <tr><td>上一次登录时间</td><td><span id="datetime" class="txt"></span></td></tr>
-            <tr><td>EmailAddress</td><td><span id="EmailAddress"></span></td></tr>、
-            <tr><td>CompanyAddress</td><td><span id="CompanyAddress"></span></td></tr>
         </table>
     </div>
 
@@ -193,14 +232,17 @@
         <iframe id="addInfoFrame" scrolling="auto" frameborder="0" width="100%" height="100%"></iframe>
     </div>
     <!---------------------添加信息结束----------------------->
+
     <!---------------编辑用户信息---------------------->
     <div id="editInfoDiv" style="overflow:hidden">
         <iframe id="editInfoFrame" scrolling="auto" frameborder="0" width="100%" height="100%"></iframe>
     </div>
-
     <!---------------编辑用户信息结束---------------------->
 
+    <div class="bid_add_price">
 
+        
+    </div>
 </body>
 </html>
 

@@ -57,7 +57,7 @@
     <div data-options="region:'north',border:false" style="height:70px;background:#B3DFDA;padding:10px; overflow:hidden;background-image:url(/Content/Images/bg3.png)">
 
         @*<img src="~/Content/Images/logo.gif" />*@
-        <span class="txt">欢迎登录 @DateTime.Now.ToString("yyyy-MM-dd")</span>
+        <span class="txt">欢迎登录 @TempData["userInfoName"] @DateTime.Now.ToString("yyyy-MM-dd")</span>
     </div>
 
     <!---------顶部布局结束------------------------------------->

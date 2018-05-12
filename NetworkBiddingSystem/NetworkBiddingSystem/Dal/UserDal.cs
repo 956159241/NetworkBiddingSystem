@@ -35,6 +35,18 @@ namespace NetworkBiddingSystem.Dal
             }
         }
 
+        public static User GetUserInfoInLogin(string userName, string passwrod)
+        {
+            using (var entity = new BidingSystemDBEntities())
+            {
+                var user = entity.User.Where(x => x.CompanyName == userName && x.Password == passwrod).FirstOrDefault();
+                if (user == null)
+                {
+                    return null;
+                }
+                return user;
+            }
+        }
         //获取公司信息分页
         public static int GetPageCount(int pageSize)
         {
